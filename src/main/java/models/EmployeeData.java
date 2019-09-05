@@ -19,6 +19,7 @@ public class EmployeeData {
 	private Boolean loginStatus;
 	private Boolean locked;
 	private Boolean deactivated;
+	private String password;
 	private List<Role> roles;
 
 	public EmployeeData() {
@@ -32,7 +33,7 @@ public class EmployeeData {
 
 	public EmployeeData(Integer id, Integer number, String firstName, String lastName, String email, String managerName,
 			Integer managerId, String department, String workSite, Integer workSiteId, String country, String phone,
-			Boolean loginStatus, Boolean locked, Boolean deactivated) {
+			Boolean loginStatus, Boolean locked, Boolean deactivated,String password) {
 		this.id = id;
 		this.number = number;
 		this.firstName = firstName;
@@ -48,11 +49,12 @@ public class EmployeeData {
 		this.loginStatus = loginStatus;
 		this.locked = locked;
 		this.deactivated = deactivated;
+		this.password=password;
 	}
 
 	public EmployeeData(Integer id, Integer number, String firstName, String lastName, String email, Integer managerId,
 			String department, Integer workSiteId, String country, String phone, Boolean loginStatus, Boolean locked,
-			Boolean deactivated) {
+			Boolean deactivated,String password) {
 		this.id = id;
 		this.number = number;
 		this.firstName = firstName;
@@ -66,13 +68,14 @@ public class EmployeeData {
 		this.loginStatus = loginStatus;
 		this.locked = locked;
 		this.deactivated = deactivated;
+		this.password=password;
 	}
 
 	public EmployeeData(Integer id, Integer number, String firstName, String lastName, String email, String managerName,
 			Integer managerId, String department, String workSite, Integer workSiteId, String country, String phone,
-			Boolean loginStatus, Boolean locked, Boolean deactivated, List<Role> roles) {
+			Boolean loginStatus, Boolean locked, Boolean deactivated,String password, List<Role> roles) {
 		this(id, number, firstName, lastName, email, managerName, managerId, department, workSite, workSiteId, country,
-				phone, loginStatus, locked, deactivated);
+				phone, loginStatus, locked, deactivated,password);
 		this.roles = roles;
 	}
 
@@ -82,7 +85,15 @@ public class EmployeeData {
 				+ ", email=" + email + ", managerId=" + managerId + ", managerName=" + managerName + ", department="
 				+ department + ", workSite=" + workSite + ", workSiteId=" + workSiteId + ", country=" + country
 				+ ", phone=" + phone + ", loginStatus=" + loginStatus + ", locked=" + locked + ", deactivated="
-				+ deactivated + ", roles=" + roles + "]";
+				+ deactivated + ", password=" + password + ", roles=" + roles + "]";
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Integer getWorkSiteId() {

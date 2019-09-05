@@ -16,7 +16,12 @@ import models.WorkSite;
 
 @Service
 public class EmployeeDataService implements IService<EmployeeData> {
-
+	@Override
+	public List<EmployeeData> findAll() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
 	public EmployeeData find(int id) throws SQLException {
 		
 		EmployeeData found = null;
@@ -29,22 +34,22 @@ public class EmployeeDataService implements IService<EmployeeData> {
 				ResultSet result = command.executeQuery();
 				result.next();
 				
-			//select the roles for this employee and insert it into the found object
 				int employeeId=result.getInt("U1.id");
 				
-				String sqlEmployeeRoles="select R.name"
-										+ " from roles R JOIN userrole UR ON R.id=UR.roleid "
-										+ "where UR.userid=?";
+				String sqlEmployeeRoles="Select R.name"
+										+ " From roles R JOIN userrole UR ON R.id=UR.roleid "
+										+ "Where UR.userid=?";
+				List<Role> roles= new ArrayList<>();
+
 				try(PreparedStatement command2=conn.prepareStatement(sqlEmployeeRoles)){
 					command2.setInt(1,employeeId);
-					ResultSet result2=command.executeQuery();
-					command2.setInt(1,employeeId);
-					Role roles=null;
+					ResultSet result2=command2.executeQuery();
+							
 					while(result2.next()) {
-						roles=new Role(result2.getString("R.name"));
-						
+						roles.add(new Role(result2.getString(1)));						
 					}
-					
+				}
+				
 					found = new EmployeeData(
 							result.getInt("U1.id"),
 							result.getInt("U1.employeenum"),
@@ -60,12 +65,10 @@ public class EmployeeDataService implements IService<EmployeeData> {
 							result.getString("U1.phone"),
 							result.getBoolean("U1.loginstatus"),
 							result.getBoolean("U1.locked"),
-							result.getBoolean("U1.deactivated")),
-							
-							
-							result.getObject
-							//add the list of roles into the found object
-				}
+							result.getBoolean("U1.deactivated"),
+							result.getString("U1.password"),
+							roles);
+				
 			}
 		}
 		catch (Exception e) {
@@ -73,8 +76,7 @@ public class EmployeeDataService implements IService<EmployeeData> {
 		}
 		return found;
 	}
-
-	// get sites name
+// get sites name
 	public List<WorkSite> findAllSites() throws SQLException {
 		List<WorkSite> sites = new ArrayList<WorkSite>();
 		String sqlSitesCommand = "Select id,name from worksite";
@@ -88,8 +90,8 @@ public class EmployeeDataService implements IService<EmployeeData> {
 		}
 		return sites;
 	}
-
-	// get roles name
+		
+// get roles name
 	public List<Role> findAllRoles() throws SQLException {
 		List<Role> roles = new ArrayList<Role>();
 		String sqlSitesCommand = "Select id,name From roles";
@@ -106,23 +108,23 @@ public class EmployeeDataService implements IService<EmployeeData> {
 
 //get departments name
 	public List<Department> findAllDepartments() throws SQLException {
-		List<Department> depatments = new ArrayList<Department>();
-		String sqlSitesCommand = "select * from department";
+	    List<Department> departments = new ArrayList<Department>();
+		String sqlDepartmetsCommand = "select * from department";
 		try (Connection conn = DBManager.getInstance().getConnection()) {
 			try (Statement command = conn.createStatement()) {
-				ResultSet result = command.executeQuery(sqlSitesCommand);
+				ResultSet result = command.executeQuery(sqlDepartmetsCommand);
 				while (result.next()) {
-					depatments.add(new Department(result.getInt("id"), result.getString("name")));
+					departments.add(new Department(result.getInt(1), result.getString(2)));
 				}
 			}
 		}
-		return depatments;
-	}
-
+		return departments;
+	}		
+		
 //get Managers (Name+ID) 
 	public List<EmployeeData> findAllManagers() throws SQLException {
 		List<EmployeeData> managers = new ArrayList<EmployeeData>();
-		String sqlSitesCommand = "select U1.firstname ,U1.id "
+		String sqlSitesCommand = "select U1.id,U1.firstname "
 								+ "From users U1 JOIN users U2 ON U1.id=U2.managerid "
 								+ "JOIN userrole UR ON U1.id=UR.userid JOIN roles R ON UR.roleid=R.id"
 								+ " Where R.name='manager'";
@@ -132,7 +134,7 @@ public class EmployeeDataService implements IService<EmployeeData> {
 				
 				ResultSet result = command.executeQuery(sqlSitesCommand);
 				while (result.next()) {
-					managers.add(new EmployeeData(result.getInt("U1.id"), result.getString("U1.name")));
+					managers.add(new EmployeeData(result.getInt(1), result.getString(2)));
 				}
 			}
 		}
@@ -140,12 +142,16 @@ public class EmployeeDataService implements IService<EmployeeData> {
 	}
 
 	
+//what does the employee object contains??
+@Override
 	public EmployeeData add(EmployeeData employee) throws SQLException,IdException {
-		String sqlAddEmployeeStatement = "Insert INTO users (employeenum,firstname,lastname,email,managerid,"
-										+ "department,worksiteid,country,phone,loginstatus,locked,deactivated)"
-										+ " values (?,?,?,?,?,?,?,?,?,?,?,?)";
+	int employeeID;
+	EmployeeData newEmployee=null;
+	String sqlAddEmployeeStatement = "Insert INTO users (employeenum,firstname,lastname,email,managerid,"
+										+ "department,worksiteid,country,phone,loginstatus,locked,deactivated,password)"
+										+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		try (Connection conn = DBManager.getInstance().getConnection()) {
-			try (PreparedStatement statement = conn.prepareStatement(sqlAddEmployeeStatement)) {
+			try (PreparedStatement statement = conn.prepareStatement(sqlAddEmployeeStatement,Statement.RETURN_GENERATED_KEYS)) {
 
 				statement.setInt(1, employee.getnumber());
 				statement.setString(2, employee.getFirstName());
@@ -159,28 +165,41 @@ public class EmployeeDataService implements IService<EmployeeData> {
 				statement.setBoolean(10, employee.getLoginStatus());
 				statement.setBoolean(11, employee.getLocked());
 				statement.setBoolean(12, employee.getDeactivated());
-				
-				List<EmployeeData> employees=findAll();
-				for(EmployeeData emp: employees) {
-					if(emp.getId() == employee.getId())
-						throw new IdException("Id already exists");
-				}
+				statement.setString(13, employee.getPassword());
 				
 				int rowCountUpdated=statement.executeUpdate();
 				
+				
+				ResultSet ids = statement.getGeneratedKeys();
+				
+				while(ids.next()) {
+					 employeeID=ids.getInt(1);
+					 System.out.println(employeeID);
+					 newEmployee=find(employeeID);
+				}
+		
 			}
 		}
+		
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		return employee;
+		return newEmployee;
 	}
 
+	
+
+
+	
+//Update Employee's Info
+	//the employee object contains also the roles
+	//how to update the Employee's manager...pick from a managers list??
+@Override
 	public EmployeeData update(EmployeeData employee) throws SQLException {
 		
 		String sqlDelEmployeeStatement = "update users set employeenum=?,firstname=?,lastname=?,"
 										+ "email=?,managerid=?,department=?,worksiteid=?,"
-										+ "country=?,phone=?,loginstatus=?,locked=?,deactivated=? where id=?";
+										+ "country=?,phone=?,loginstatus=?,locked=?,deactivated=?,password=? where id=?";
 		try (Connection conn = DBManager.getInstance().getConnection()) {
 			try (PreparedStatement statement = conn.prepareStatement(sqlDelEmployeeStatement)) {
 				
@@ -196,13 +215,12 @@ public class EmployeeDataService implements IService<EmployeeData> {
 				statement.setBoolean(10, employee.getLoginStatus());
 				statement.setBoolean(11, employee.getLocked());
 				statement.setBoolean(12, employee.getDeactivated());
+				statement.setString(13, employee.getPassword());
 
-				statement.setInt(13, employee.getId());
+				statement.setInt(14, employee.getId());
 				
-				int rowCountUpdated = statement.executeUpdate();
-				
+				int rowCountUpdated = statement.executeUpdate();				
 			}
-			
 		}
 		catch (Exception e) {
 			
@@ -211,7 +229,9 @@ public class EmployeeDataService implements IService<EmployeeData> {
 		return employee;
 	}
 
-	// Deactivate an employee
+	
+//Deactivate an employee
+@Override
 	public EmployeeData delete(int id) throws SQLException {
 
 		String sqlDelEmployeeStatement = "update users set deactivated=true where id=?";
@@ -223,13 +243,13 @@ public class EmployeeDataService implements IService<EmployeeData> {
 				int res = statment.executeUpdate();
 
 				deactevatedEmployee = find(id);
-
 			}
-
 		}
 		return deactevatedEmployee;
 	}
-	//unlock Employee
+	
+	
+//unlock Employee
 	public EmployeeData unlock(int id) throws SQLException{
 		String sqlUnlockEmployeeStatement = "update users set locked=true where id=?";
 		EmployeeData lockedEmployee = null;
@@ -238,18 +258,9 @@ public class EmployeeDataService implements IService<EmployeeData> {
 				statment.setInt(1, id);
 
 				int res = statment.executeUpdate();
-
 				lockedEmployee = find(id);
-
 			}
-
 		}
 		return lockedEmployee;
-	}
-
-	@Override
-	public List<EmployeeData> findAll() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

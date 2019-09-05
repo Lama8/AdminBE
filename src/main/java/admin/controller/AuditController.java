@@ -9,17 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import admin.db.RoleService;
-import models.Role;
+import admin.db.AuditService;
+import models.Audit;
+
+
+public class AuditController {
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/audit")
 public class RoleController {
 	@Autowired
-	private RoleService roleService;
+	private AuditService auditService;
 	
 	@GetMapping("")
-	public @ResponseBody List<Role> all() throws SQLException{
-		return roleService.findAll();
+	public @ResponseBody List<Audit> all() throws SQLException{
+		return auditService.findAll();
 	}
+	
+
+}
 }
