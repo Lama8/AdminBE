@@ -1,22 +1,18 @@
 package models;
 
-import java.sql.Time;
 import java.util.Date;
 
 public class Audit {
 	private Integer id;
-	//delete the time ...just datetime
 	
-	private Date date;
-	private Time time;
+	private Date dateTime;
 	private Integer userId;
 	private String activity;
 
 	
-	public Audit(Integer id, Date date,Time time,Integer userId,String activity) {
+	public Audit(Integer id, Date dateTime,Integer userId,String activity) {
 		this.id=id;
-		this.date=date;
-		this.time=time;
+		this.dateTime=dateTime;
 		this.userId=userId;
 		this.activity=activity;
 	}
@@ -27,24 +23,17 @@ public class Audit {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
 	public Integer getUserId() {
 		return userId;
 	}
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public Date getDate() {
-		return date;
+	public Date getDateTime() {
+		return dateTime;
 	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	public Time getTime() {
-		return time;
-	}
-	public void setTime(Time time) {
-		this.time = time;
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
 	
 	public String getActivity() {

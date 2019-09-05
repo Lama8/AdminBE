@@ -7,14 +7,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Audit;
+import org.springframework.stereotype.Service;
 
+import models.Audit;
+@Service
 public class AuditService implements IService<Audit> {
 
 	@Override
 	public List<Audit> findAll() throws SQLException {
 		List<Audit> audit=new ArrayList<Audit>();
-		String sqlAllUserscommand="select A.date,A.time,U.firstname,A.activity "+ 
+		String sqlAllUserscommand="select A.id,A.datetime,U.firstname,A.activity "+ 
 									"from users U JOIN audit A ON U.id=A.userid";
 		try(Connection conn=DBManager.getInstance().getConnection()) {
 			try(Statement command = conn.createStatement()){
@@ -23,8 +25,7 @@ public class AuditService implements IService<Audit> {
 					audit.add(
 							new Audit(
 									result.getInt("A.id"),
-									result.getDate("A.date"),
-									result.getTime("A.time"),
+									result.getDate("A.datetime"),
 									result.getInt("U.firstname"),
 									result.getString("A.activity")
 									));

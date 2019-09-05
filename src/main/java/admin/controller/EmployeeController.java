@@ -20,38 +20,14 @@ import models.Role;
 import models.WorkSite;
 
 @RestController
-@RequestMapping("/updateEmployee")
+@RequestMapping("/employees")
 public class EmployeeController {
 	@Autowired
 	private EmployeeDataService employeeDataService;
-//All Employees
-	@GetMapping("")
-	public @ResponseBody List<EmployeeData> allEmployees() throws SQLException {
-		return employeeDataService.findAll();
-	}
 //Employee
 	@GetMapping("/{id}")
 	public @ResponseBody EmployeeData findEmployeeById(@PathVariable int id) throws SQLException {
 		return employeeDataService.find(id);
-	}
-
-//Add Employee
-	@PostMapping("")
-	public String newEmployee(@RequestBody EmployeeData employee) throws SQLException ,IdException{
-		EmployeeData isOK = employeeDataService.add(employee);
-		return isOK.toString();
-	}
-//Delete Employee
-	@DeleteMapping("/{id}")
-	public String deleteEmployee(@PathVariable Integer id) throws SQLException {
-		EmployeeData isOK = employeeDataService.delete(id);
-		return isOK.toString();
-	}
-//Update Employee
-	@PutMapping("/{id}")
-	public @ResponseBody EmployeeData updateEmployeeInfo(@PathVariable int id, @RequestBody EmployeeData employee) throws SQLException {
-		EmployeeData isOK = employeeDataService.update(employee);
-		return isOK;
 	}
 //Select Work Sites
 	@GetMapping("/WorkSites")
@@ -68,17 +44,36 @@ public class EmployeeController {
     public @ResponseBody List<Department> allDepartments() throws SQLException {
         return employeeDataService.findAllDepartments();
     }
-	
 //Select Managers	
-	@GetMapping("/Managers")
-	public @ResponseBody List<EmployeeData> allManagers() throws SQLException {
-		return employeeDataService.findAllManagers();
-	}
-//Unlock Employee
-	@DeleteMapping("/{id}")
-	public String unlockEmployee(@PathVariable Integer id) throws SQLException {
-		EmployeeData isOK = employeeDataService.unlock(id);
-		return isOK.toString();
-	}
+    @GetMapping("/Managers")
+    public @ResponseBody List<EmployeeData> allManagers() throws SQLException {
+    	return employeeDataService.findAllManagers();
+    }
+//Add Employee
+    @PostMapping("")
+    public String newEmployee(@RequestBody EmployeeData employee) throws SQLException ,IdException{
+    	EmployeeData isOK = employeeDataService.add(employee);
+    	return isOK.toString();
+    }
+//Update Employee
+    @PutMapping("/{id}")
+    public @ResponseBody EmployeeData updateEmployeeInfo(@PathVariable int id, @RequestBody EmployeeData employee) throws SQLException {
+    	EmployeeData isOK = employeeDataService.update(employee);
+    	return isOK;
+    }
 	
+
+//Delete Employee
+    @DeleteMapping("/{id}")
+    public String deleteEmployee(@PathVariable Integer id) throws SQLException {
+    	EmployeeData isOK = employeeDataService.delete(id);
+    	return isOK.toString();
+    }
+	
+//Unlock Employee
+    @PutMapping("/unlock/{id}")
+    public String  unlockEmployee(@PathVariable Integer id) throws SQLException {
+    	EmployeeData isOK = employeeDataService.unlock(id);
+    	return isOK.toString();
+    }
 }
