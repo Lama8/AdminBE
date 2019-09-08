@@ -2,7 +2,7 @@ package admin.db;
 
 public class IdException extends Exception {
 	
-		public IdException(String string) {
-			super(string);
+		public IdException(String message) {
+			super(message);
 		}
 }
