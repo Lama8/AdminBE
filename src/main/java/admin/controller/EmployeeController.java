@@ -40,14 +40,6 @@ public class EmployeeController {
         return employeeDataService.findAllRoles();
     }
 
-	//Add department
-		@PostMapping("")
-		public String newDepartment(@RequestBody Department department) throws SQLException {
-			Department isOk=employeeDataService.addDepartment(department);
-			return isOk.toString();
-		
-		}
-
 //Select Departments
     @GetMapping("/departments")
     public @ResponseBody List<Department> allDepartments() throws SQLException {

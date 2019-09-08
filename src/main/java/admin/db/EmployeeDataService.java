@@ -265,38 +265,6 @@ public class EmployeeDataService implements IService<EmployeeData> {
 		return lockedEmployee;
 	}
 
-	public Department addDepartment(Department department) throws SQLException{
-		int departmentId;
-		Department newD=null;
-		String sqlAddDepartment="Insert INTO department(id,name) values(?,?)";
-		try (Connection conn = DBManager.getInstance().getConnection()) {
-			try (PreparedStatement statement = conn.prepareStatement(sqlAddDepartment,
-					Statement.RETURN_GENERATED_KEYS)) {
-				statement.setInt(1,department.getId());
-				statement.setString(1,department.getName());
-				
-				int rowCountUpdated = statement.executeUpdate();
-
-				ResultSet ids = statement.getGeneratedKeys();
-
-				while (ids.next()) {
-					departmentId = ids.getInt(1);
-					String sqlresult="select * From departmen Where id=?";
-					try(PreparedStatement command = conn.prepareStatement(sqlresult)){
-						command.setInt(1,departmentId);
-						ResultSet result=command.executeQuery();
-						result.next();
-						newD=new Department(result.getInt(1), result.getString(2));
-						
-					}
-					
-					 
-				}
-				
-			}
-			}
-		return newD;
-	}
 
 
 	
