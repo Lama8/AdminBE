@@ -27,10 +27,10 @@ public class EmployeesController {
 	public @ResponseBody List<Employees> all() throws SQLException {
 		return employeesService.findAll();
 		}
-//	@GetMapping("/name")
-//	public @ResponseBody Employees findEmployeeByName(@PathVariable String name) throws SQLException {
-//		return employeesService.findByName(name);
-//	}
-	
+	@GetMapping("/{name}")
+	public @ResponseBody List<Employees> findbyname(@PathVariable String name) throws SQLException {
+		return employeesService.find(name);
+	}
+
 }
 
