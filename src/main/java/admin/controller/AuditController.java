@@ -13,11 +13,10 @@ import admin.db.AuditService;
 import models.Audit;
 
 
-public class AuditController {
-
 @RestController
 @RequestMapping("/audit")
-public class RoleController {
+public class AuditController {
+
 	@Autowired
 	private AuditService auditService;
 	
@@ -27,5 +26,5 @@ public class RoleController {
 	}
 	
 
-}
+
 }
