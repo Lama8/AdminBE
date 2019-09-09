@@ -4,16 +4,23 @@ import java.util.Date;
 
 public class Audit {
 	private Integer id;
-	
+	private Integer employeeNumber;
 	private Date dateTime;
 	private Integer userId;
 	private String activity;
 
 	
-	public Audit(Integer id, Date dateTime,Integer userId,String activity) {
+	public Audit(Integer id,Integer employeeNumber, Date dateTime,Integer userId,String activity) {
 		this.id=id;
+		this.employeeNumber=employeeNumber;
 		this.dateTime=dateTime;
 		this.userId=userId;
+		this.activity=activity;
+	}
+	public Audit(Integer id,Integer employeeNumber, Date dateTime,String activity) {
+		this.id=id;
+		this.employeeNumber=employeeNumber;
+		this.dateTime=dateTime;
 		this.activity=activity;
 	}
 	
@@ -22,6 +29,12 @@ public class Audit {
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Integer getEmployeeNumber() {
+		return employeeNumber;
+	}
+	public void setEmployeeNumber(Integer employeeNumber) {
+		this.employeeNumber = employeeNumber;
 	}
 	public Integer getUserId() {
 		return userId;

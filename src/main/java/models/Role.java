@@ -16,7 +16,10 @@ public class Role {
 		this.id=id;
 		this.name=name;
 	}
-	
+	public Role(Integer id,String name, List<Permission> arrayList) {
+		this(id, name);
+		this.permissions = arrayList;
+	}
 	
 	public Role(Integer id,String name,String description, ArrayList<Permission> arrayList) {
 		this(id, name);
