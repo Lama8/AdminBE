@@ -1,3 +1,0 @@
-INDEX VERSION 1.131+C:\Users\lama\Documents\workspace-spring-tool-suite-4-4.3.2.RELEASE\AdminBE\AdminBE\.metadata\.plugins\org.eclipse.jdt.core
-113558702.index
-2225247044.index

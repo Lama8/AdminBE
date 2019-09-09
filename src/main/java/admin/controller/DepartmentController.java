@@ -19,7 +19,7 @@ public class DepartmentController {
 	@Autowired
 	private DepartmentService departmentService;
 	//Add department
-  	@PostMapping("/department")
+  	@PostMapping("")
 	public String newDepartment(@RequestBody Department department) throws SQLException, IdException {
  		Department isOk=departmentService.add(department);
   		return isOk.toString();

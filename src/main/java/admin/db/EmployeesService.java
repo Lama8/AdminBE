@@ -18,10 +18,10 @@ public class EmployeesService implements IService<Employees> {
 	@Override
 	public List<Employees> findAll() throws SQLException {
 		List<Employees> users=new ArrayList<Employees>();
-		String sqlAllUserscommand="select U.id,U.employeenum,concat(U.firstname,U.lastname) as name,"
-								+ "U.department,concat(WS.name,C.name) as worksite"
-								+ " From users U JOIN worksite WS ON U.worksiteid=WS.id"
-								+ " JOIN country C ON WS.countryid=C.id";
+		String sqlAllUserscommand="select U.id,U.employee_number,concat(U.first_name,U.last_name) as name,"
+								+ "U.department,concat(WS.name,C.name) as work_site"
+								+ " From users U JOIN worksite WS ON U.work_site_id=WS.id"
+								+ " JOIN country C ON WS.country_id=C.id";
 		try(Connection conn=DBManager.getInstance().getConnection()) {
 			try(Statement command = conn.createStatement()){
 				ResultSet result=command.executeQuery(sqlAllUserscommand);
@@ -29,10 +29,10 @@ public class EmployeesService implements IService<Employees> {
 					users.add(
 							new Employees(
 									result.getInt("U.id"),
-									result.getInt("U.employeenum"),
+									result.getInt("U.employee_number"),
 									result.getString("name"),
 									result.getString("U.department"),
-									result.getString("worksite")
+									result.getString("work_site")
 									));
 				}
 			}
@@ -47,9 +47,9 @@ public class EmployeesService implements IService<Employees> {
 		public List<Employees> find(String name) throws SQLException {
 
 			List <Employees> found = new ArrayList<>();
-			String sqlFindCommand ="SELECT U.id, U.employeenum,CONCAT(U.firstname,' ',U.lastname) as userName "
+			String sqlFindCommand ="SELECT U.id, U.employee_number,CONCAT(U.first_name,' ',U.last_name) as userName "
 					+ ",W.name as workSiteName, U.department "
-					+ "FROM users U join worksite W on U.worksiteid=W.id "
+					+ "FROM users U join worksite W on U.work_site_id=W.id "
 					+ "having userName=?";
 			
 			try (Connection conn = DBManager.getInstance().getConnection()) {
@@ -61,8 +61,8 @@ public class EmployeesService implements IService<Employees> {
 						employees.add(result.getInt(1));
 					}
 					String sqlFindRoles="SELECT R.id,R.name" + 
-							" FROM roles R join userrole US ON R.id=US.roleid" + 
-							" WHERE US.userid=?";
+							" FROM roles R join userrole US ON R.id=US.role_id" + 
+							" WHERE US.user_id=?";
 					
 					List<Role> employeeRoles=new ArrayList<>();
 					try(PreparedStatement command2=conn.prepareStatement(sqlFindRoles)){
